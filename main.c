@@ -1,4 +1,4 @@
-/******************************************************************************/
+                                                                             /******************************************************************************/
 /* Files to Include                                                           */
 /******************************************************************************/
 
@@ -18,7 +18,8 @@
 /******************************************************************************/
 /* User Global Variable Declaration                                           */
 /******************************************************************************/
-unsigned char resistence = 0;
+unsigned char resistence;
+unsigned char output;
 /* i.e. uint8_t <variable_name>; */
 
 /******************************************************************************/
@@ -32,49 +33,50 @@ void main(void)
     /* Initialize I/O and Peripherals for application */
     InitApp();
 
-
+    resistence = 8;
+    PORTB = 0;
+        
     while(1)
     {
+        /* 
+         * C1 - low limit signal, 
+         * C2 - high limit signal 
+         */ 
         
-        if (C2OUT==1) {
+                
+        RA7 = C1OUT;
+        RA6 = C2OUT;
+        
+        
+        if (C1OUT==1 && C2OUT==1) {
+            // volume is to silent
+            if (resistence <15 ) resistence++;
+        } else if (C1OUT==0 && C2OUT==0 ) {
+            // volume is to  high
             if (resistence > 0 ) resistence--;
-        } else {
-            if (resistence < 15 ) resistence++;
-        }; 
-        
-        /* 
-         *  volume regulator with two buttons
-         * 
-        if (VOLUME_UP == IS_PRESSED
-            && VOLUME_DOWN == IS_UNPRESSED) {
-            // volume up
-            if (resistence>0) resistence--;
-            
-        } else if (VOLUME_UP == IS_UNPRESSED
-            && VOLUME_DOWN == IS_PRESSED) {
-            // volume down
-            if (resistence<15) resistence++;
         };
-        */
+        
+        if (AUTOVOLUME==IS_PRESSED) {
+            TRISB = ~((resistence<<4) + resistence);
+        } else {
+            TRISB = 0b10111011;
+        };
+        
+        if ( resistence==15 && RA6==1) { 
+            MAX_REACHED_LED=LIGHT_ON;
+        } else {
+            MAX_REACHED_LED=LIGHT_OFF;
+        };
+        
+        if ( resistence==0 ) { 
+            MIN_REACHED_LED=LIGHT_OFF;
+        } else {
+            MIN_REACHED_LED=LIGHT_ON;
+        };
+        
+        __delay_ms(300);
         
         
-        TRISB = ~((resistence<<4) + resistence);
-        PORTB = ~((resistence<<4) + resistence);
-        
-        __delay_ms(200);
-        
-        /* 
-        for (unsigned char i=0; i<16; i++) {
-            TRISB = ~(((15-i)<<4) + i);
-            PORTB = ~(((15-i)<<4) + i);
-            __delay_ms(30);
-        };        
-        for (unsigned char i=0; i<16; i++) {
-            TRISB = ~((i<<4) + 15-i);
-            PORTB = ~((i<<4) + 15-i);
-            __delay_ms(30);
-        }; 
-        */       
     };
 };
 

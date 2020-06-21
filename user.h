@@ -2,9 +2,22 @@
 /* User Level #define Macros                                                  */
 /******************************************************************************/
 
-#define CMP_ENTER   RA1
-#define VREF_ENTER  RA2
 
+#define CMP1_PIN        RA0
+#define CMP2_PIN        RA1
+#define VREF_PIN        RA2
+
+#define MAX_REACHED_LED RA3
+#define MIN_REACHED_LED RA4
+
+#define LIGHT_ON        0
+#define LIGHT_OFF       1
+
+
+#define AUTOVOLUME      RA5
+
+#define IS_PRESSED         0
+#define IS_UNPRESSED       1
 
 
 /* TODO Application specific user parameters used in user.c may go here */
